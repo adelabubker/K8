@@ -1,8 +1,8 @@
-// src/pages/ContactPage.jsx — Matches screenshots: hero, form, sidebar info, FAQ accordion
+// src/pages/ContactPage.jsx — Connects contact form to n8n webhook
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { toast } from 'react-hot-toast';
-import { Mail, Phone, MapPin, Clock, Linkedin, Twitter, Github, Instagram, Send, User, Building, ChevronDown, ChevronUp, DollarSign, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Linkedin, Twitter, Github, Instagram, Send, User, Building, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
 
 const FAQS = [
   {
@@ -24,20 +24,66 @@ const FAQS = [
 ];
 
 const ContactPage = () => {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', service: '', budget: '', message: '' });
+  // Form State
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    service: '',
+    message: ''
+  });
+
   const [sending, setSending] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
 
   const heroBg = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1800&q=80';
 
+  const validateForm = () => {
+    if (!form.name.trim()) return 'Name is required';
+    if (!form.email.trim()) return 'Email is required';
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) return 'Please enter a valid email address';
+    if (!form.service) return 'Please select a service';
+    if (!form.message.trim()) return 'Message is required';
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return toast.error('Please fill required fields');
+
+    // Inline Validation
+    const error = validateForm();
+    if (error) return toast.error(error);
+
     setSending(true);
-    await new Promise(r => setTimeout(r, 1200));
-    toast.success('Message sent! We\'ll respond within 24 hours.');
-    setForm({ name: '', email: '', phone: '', company: '', service: '', budget: '', message: '' });
-    setSending(false);
+
+    try {
+      const response = await fetch('https://your-n8n-domain/webhook/contact-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          subject: "New Contact Request"
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success === true) {
+        toast.success('Message sent! We\'ll respond within 24 hours.');
+        // Reset form after success
+        setForm({ name: '', email: '', phone: '', company: '', service: '', message: '' });
+      } else {
+        toast.error(result.message || 'Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      console.error('Submission error:', err);
+      toast.error('Network error. Please check your connection and try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const inputStyle = {
@@ -141,29 +187,6 @@ const ContactPage = () => {
                   <option value="consulting">Automation Consulting</option>
                   <option value="analytics">AI-Powered Analytics</option>
                   <option value="optimization">Process Optimization</option>
-                </select>
-              </div>
-
-              {/* Budget */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ fontSize: '0.82rem', fontWeight: '600', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  <DollarSign size={13} /> Project Budget
-                </label>
-                <select style={{ ...inputStyle, appearance: 'none',
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a0a0a0' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', backgroundSize: '20px', cursor: 'pointer',
-                }}
-                  value={form.budget}
-                  onChange={e => setForm({ ...form, budget: e.target.value })}
-                  onFocus={e => e.target.style.borderColor = 'var(--gold-border-strong)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
-                >
-                  <option value="">Select budget range...</option>
-                  <option value="< $1,000">Less than $1,000</option>
-                  <option value="$1,000 - $5,000">$1,000 - $5,000</option>
-                  <option value="$5,000 - $15,000">$5,000 - $15,000</option>
-                  <option value="$15,000 - $50,000">$15,000 - $50,000</option>
-                  <option value="$50,000+">$50,000+</option>
                 </select>
               </div>
 
