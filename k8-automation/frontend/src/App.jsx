@@ -20,6 +20,7 @@ import AddServicePage from './pages/AddServicePage';
 import EditServicePage from './pages/EditServicePage';
 import UsersPage from './pages/UsersPage';
 import SettingsPage from './pages/SettingsPage';
+import LeadsPage from './pages/LeadsPage';
 
 // Route guard
 import ProtectedRoute from './components/ProtectedRoute';
@@ -50,6 +51,7 @@ const App = () => {
       <Route path="/dashboard/services" element={<ProtectedRoute requiredRole="admin"><ServicesPage /></ProtectedRoute>} />
       <Route path="/dashboard/services/add" element={<ProtectedRoute requiredRole="admin"><AddServicePage /></ProtectedRoute>} />
       <Route path="/dashboard/services/edit/:id" element={<ProtectedRoute requiredRole="admin"><EditServicePage /></ProtectedRoute>} />
+      <Route path="/dashboard/leads" element={<ProtectedRoute requiredRole="admin"><LeadsPage /></ProtectedRoute>} />
 
       {/* ── Full Admin only ───────────────────────────────── */}
       <Route path="/dashboard/users" element={<ProtectedRoute requiredRole="fullAdmin"><UsersPage /></ProtectedRoute>} />

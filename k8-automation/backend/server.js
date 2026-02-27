@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/contacts', require('./routes/contactRoutes'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

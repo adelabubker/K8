@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { toast } from 'react-hot-toast';
+import api from '../utils/api';
 import { Mail, Phone, MapPin, Clock, Linkedin, Twitter, Github, Instagram, Send, User, Building, ChevronDown, ChevronUp, DollarSign, MessageSquare } from 'lucide-react';
 
 const FAQS = [
@@ -32,12 +33,17 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return toast.error('Please fill required fields');
+    if (!form.name || !form.email || !form.message || !form.service) return toast.error('Please fill required fields');
     setSending(true);
-    await new Promise(r => setTimeout(r, 1200));
-    toast.success('Message sent! We\'ll respond within 24 hours.');
-    setForm({ name: '', email: '', phone: '', company: '', service: '', budget: '', message: '' });
-    setSending(false);
+    try {
+      await api.post('/contacts', form);
+      toast.success('Message sent! We\'ll respond within 24 hours.');
+      setForm({ name: '', email: '', phone: '', company: '', service: '', budget: '', message: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const inputStyle = {

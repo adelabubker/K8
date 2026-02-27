@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { LayoutDashboard, Zap, PlusCircle, Users, Settings, LogOut, ChevronRight, X, Shield } from 'lucide-react';
+import { LayoutDashboard, Zap, PlusCircle, Users, Settings, LogOut, ChevronRight, X, Shield, MessageSquare } from 'lucide-react';
 
 const Sidebar = () => {
   const { user, logout, isFullAdmin } = useAuth();
@@ -15,6 +15,7 @@ const Sidebar = () => {
     { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
     { to: '/dashboard/services', icon: Zap, label: 'Services' },
     { to: '/dashboard/services/add', icon: PlusCircle, label: 'Add Service' },
+    { to: '/dashboard/leads', icon: MessageSquare, label: 'Leads' },
     ...(isFullAdmin ? [
       { to: '/dashboard/users', icon: Users, label: 'Users' },
       { to: '/dashboard/settings', icon: Settings, label: 'Settings' },
