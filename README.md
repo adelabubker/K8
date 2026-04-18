@@ -311,34 +311,3 @@ Then reinstall:
 cd backend && npm install
 cd ../frontend && npm install
 ```
-
----
-
-## Suggested Improvements
-
-If you continue developing this project, strong next steps would be:
-
-- add a seed script for creating the first `fullAdmin`
-- add automated API and frontend tests
-- add Docker support
-- add CI/CD workflows
-- add deployment instructions for frontend and backend hosting
-- add screenshots to this README
-- add a live demo link
-
----
-
-## License
-
-This project is licensed under the MIT License.
-
----
-
-## Author
-
-Built for the **K8 Automation** brand and admin workflow use case.
-
-If you publish this repository, consider replacing this section with:
-- your name
-- your GitHub profile
-- your portfolio or LinkedIn
